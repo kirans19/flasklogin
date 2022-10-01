@@ -1,4 +1,5 @@
-import logging
+
+
 
 from flask_pymongo import pymongo
 from flask import jsonify, request
@@ -22,33 +23,30 @@ print("MongoDB connected Successfully")
 def project_api_routes(endpoints):
     @endpoints.route('/register-user', methods=['POST'])
     def register_user():
-        resp = {}
+        msg=''
+        
+        
+        
+        
         try:
             req_body = request.get_json(force=True)
-            if user_collection.count_documents(req_body)==0 and re.fullmatch(regex,req_body['username']):
-
+            var=req_body['username']
+            if (not user_collection.find_one({"username":var})) and re.fullmatch(regex,req_body['username']):
+                
+                  
                 user_collection.insert_one(req_body) 
+                msg='SignUp Successful'
             else:
-                print("dfghjk")
-
-
-            status = {
-                "statusCode":"200",
-                "statusMessage":"Success"
-
-            }
+                msg='User Already Exists'
+      
         except Exception as e:
             print(e)
-            status = {
-                "statusCode":"400",
-                "statusMessage":str(e)
-            }
-        resp["status"] =status
-        return resp
+            msg='Sign Up Unsuccessful'
+        return {'resp': msg}
 
     @endpoints.route('/signin',methods=['POST'])
     def signin():
-        resp={}
+        msg=''
         try:
             data=request.get_json(force=True)
             print(data)
@@ -59,17 +57,10 @@ def project_api_routes(endpoints):
             p1=out.get('password')
             print("**",u1," ",p1)
             print(data,"hibaaaaaa")
-            status = {
-                "statusCode":"200"
-
-            }
+            msg='Login Successful'
         except Exception as e:
             print(e)
-            status = {
-                "statusCode":"400"
-            }
-            #jkgdkjfgskdjgfsk
-        resp["status"] =status
-        return resp
+            msg='Unsuccessful'
+        return {'resp': msg}
 
     return endpoints
